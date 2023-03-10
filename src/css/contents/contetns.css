@@ -1,0 +1,200 @@
+
+@keyframes leftToRight1 {
+    0% {
+        left: 100px;
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+    100% {
+        left: calc(50vw - 402.5px);
+        scale: 1;
+        z-index: 50;
+        filter: blur(0);
+    }
+}
+
+@keyframes leftToRight2 {
+    0% {
+        left: calc(50vw - 402.5px);
+        scale: 1;
+        z-index: 50;
+        filter: blur(0);
+    }
+
+    100% {
+        left: calc(100vw - 805px - 100px);
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+}
+
+@keyframes leftToRight3 {
+    0% {
+        left: calc(100vw - 805px - 100px);
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+
+    100% {
+        left: 100px;
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+}
+
+
+
+@keyframes rightToLeft1 {
+    0% {
+        left: 100px;
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+    100% {
+        left: calc(100vw - 805px - 100px);
+        scale: 0.7;
+        z-index: 10;
+        
+        filter: blur(5px);
+    }
+}
+
+@keyframes rightToLeft2 {
+    0% {
+        left: calc(50vw - 402.5px);
+        scale: 1;
+        z-index: 50;
+        
+        filter: blur(0);
+    }
+
+    100% {
+        left: 100px;
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+}
+
+@keyframes rightToLeft3 {
+    0% {
+        left: calc(100vw - 805px - 100px);
+        z-index: 10;
+        scale: 0.7;
+        filter: blur(5px);
+    }
+
+    100% {
+        left: calc(50vw - 402.5px);
+        z-index: 50;
+        scale: 1;
+        filter: blur(0);
+    }
+}
+
+
+.leftToRight1 {
+    position: absolute;
+    animation: leftToRight1 0.5s ease-in-out forwards;    
+}
+
+.leftToRight2 {
+    
+    position: absolute;
+    animation: leftToRight2 0.5s ease-in-out forwards;    
+}
+
+.leftToRight3 {
+    position: absolute;
+    animation: leftToRight3 0.5s ease-in-out forwards;    
+}
+
+
+
+.rightToLeft1 {
+    position: absolute;
+    animation: rightToLeft1 0.5s ease-in-out forwards;    
+
+    left: 100px;
+    z-index: 10;
+    scale: 0.7;
+    filter: blur(5px);
+}
+
+.rightToLeft2 {
+    position: absolute;
+    animation: rightToLeft2 0.5s ease-in-out forwards;    
+
+    
+    left: calc(50vw - 402.5px);
+    scale: 1;
+    z-index: 50;
+    
+    filter: blur(0);
+}
+
+.rightToLeft3 {
+    position: absolute;
+    animation: rightToLeft3 0.5s ease-in-out forwards;   
+    
+    left: calc(100vw - 805px - 100px);
+    z-index: 10;
+    scale: 0.7;
+    filter: blur(5px); 
+}
+
+
+
+.triggerDefault1 {
+    position: absolute;
+    left: 100px;
+    scale: 0.7;
+    z-index: 10;
+    
+    filter: blur(5px);
+}
+
+.triggerDefault2 {
+    position: absolute;
+    left: calc(50vw - 402.5px);
+    scale: 1;
+    z-index: 50;
+}
+
+.triggerDefault3 {
+    position: absolute;
+    left: calc(100vw - 805px - 100px);
+    scale: 0.7;
+    z-index: 10;
+    
+    filter: blur(5px);
+}
+
+
+
+
+.leftClick {
+    cursor: pointer;
+    left: 100px;
+    position: absolute;
+    width: 805px;
+    height: 625px;
+    scale: 0.7;
+    z-index: 30;
+}
+
+.rightClick {
+    
+    cursor: pointer;
+    left: calc(100vw - 805px - 100px);
+    position: absolute;
+    width: 805px;
+    height: 625px;
+    scale: 0.7;
+    z-index: 30;
+}

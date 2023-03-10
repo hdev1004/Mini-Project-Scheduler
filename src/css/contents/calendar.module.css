@@ -1,0 +1,106 @@
+
+
+.calendar {
+    width: 100%;
+}
+
+.frame {
+    /*
+    filter: blur(10px);
+    -webkit-filter: blur(5px);
+    */
+    transition: 0.5s;
+    margin-left: auto;
+    margin-right: auto;
+    width: 805px;
+    
+    /*transform: perspective(1000px) rotateY(-10deg);*/
+}
+
+.weeks {
+    font-family: '열아홉';
+    font-size: 20px;
+    font-weight: bold;
+    color: #181823; 
+    
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.week {
+    font-family: '열아홉';
+    height: 50px;
+    width: 115px;
+    line-height: 50px;
+    text-align: center;
+    
+}
+
+.rows {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.days {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.day {
+    background-color: white;
+    width: 115px;
+    transition: 0.5s;
+    font-family: '열아홉';
+    text-align: left;
+    height: 115px;
+    font-size: 17px;
+    font-weight: bold;
+    box-shadow: 0px 0px 2px darkgray;
+    border-radius: 8px;
+}
+
+.date {
+    
+    margin-left: 15px;
+    margin-top: 10px;
+    font-family: '열아홉';
+    font-size: 20px;
+}
+
+.list {  
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-top: 5px;
+    width: 90px;
+    height: 70px;
+}
+
+.listItem {  
+    width: 90px;
+    font-weight: bolder !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.day:hover {
+    background-color: rgba(225, 225, 225);
+}
+
+.list::-webkit-scrollbar {
+    width: 5px;  /* 스크롤바의 너비 */
+}
+  
+.list::-webkit-scrollbar-thumb {
+    height: 30%; /* 스크롤바의 길이 */
+    background: #d0dcec; /* 스크롤바의 색상 */
+    
+    border-radius: 10px;
+}
+  
+.list::-webkit-scrollbar-track {
+    background: rgba(126, 129, 133, 0.1);  /*스크롤바 뒷 배경 색상*/
+}
