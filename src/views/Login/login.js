@@ -4,38 +4,76 @@
 import styles from "../../css/Login/login.module.css";
 import { Button, Checkbox, Form, Input, notification } from "antd";
 import styled from "styled-components";
+import { useEffect, useRef } from "react";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { loginUrlState } from "../../recoil/state";
+import { useCookies } from "react-cookie";
+import { useNavigate } from 'react-router-dom';
 
-const StyleForm = styled.div`
-    width: 800px;
-    background-color: #e4e7ec;
-    padding-left: 50px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-    ustify-content: center;
-    border-radius: 5px;
-    box-shadow: 0px 0px 2px gray;
-`
-
-const onFinish = () => {
-    alert("성공");
-    openNotificationWithIcon('success');
-}
-
-const onFinishFailed = () => {
-    alert("실패");
-}
-
-const openNotificationWithIcon = (type) => {
-    let [api, contextHolder] = notification.useNotification();
-
-    api[type]({
-      message: 'Notification Title',
-      description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-    });
-  };
+import { checkUserState, loginState } from "../../recoil/state";
 
 function Login() {
+    const [cookies, setCookie, removeCookie] = useCookies(); // 쿠키 훅 
+    const [url, setUrl] = useRecoilState(loginUrlState);
+    const idRef = useRef()
+    const pwRef = useRef()
+    const navigate = useNavigate();
+
+    const [checkUser, setCheckUser] = useRecoilState(checkUserState);
+    const [isLogin, setIsLogin] = useRecoilState(loginState);
+
+    const StyleForm = styled.div`
+      width: 800px;
+      background-color: #e4e7ec;
+      padding-left: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      ustify-content: center;
+      border-radius: 5px;
+      box-shadow: 0px 0px 2px gray;
+    `
+
+    useEffect(() => {
+      let token = cookies["token"];
+      console.log("Token : " + token);
+      console.log(checkUser)
+      axios.get(checkUser, {
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      }).then((res) => {
+        console.log(res);
+        if(res.data.result == "success") {
+          setIsLogin(true);
+          navigate("/contents");
+        }
+        else
+          setIsLogin(false)
+      })
+    }, [])
+
+    const onFinish = () => {
+      let id = idRef.current.input.value;
+      let pw = pwRef.current.input.value;
+
+      axios.post(url, {
+        id: id,
+        pw: pw
+      }).then((res) => {
+        let data = res.data;
+        if(data.result == "success") {
+          setCookie("token", data.access_token);
+          navigate("/contents")
+        } else {
+          alert("아이디 또는 비밀번호가 틀렸습니다.");
+        }
+      })
+    }
+
+    const onFinishFailed = () => {
+    }
+
     return (
       <div style={{width: "100%", height: "100%", alignItems: "center", display: "flex", justifyContent: "center", backgroundColor: "#f4f7f7"}}>
         <StyleForm>
@@ -54,7 +92,7 @@ function Login() {
                 name="id"
                 rules={[{ required: true, message: '아이디를 입력해주세요!'}]}
                 >
-                <Input />
+                <Input ref={idRef}/>
                 </Form.Item>
 
                 <Form.Item
@@ -62,7 +100,7 @@ function Login() {
                 name="password"
                 rules={[{ required: true, message: '비밀번호를 입력해주세요!' }]}
                 >
-                <Input.Password />
+                <Input.Password ref={pwRef}/>
                 </Form.Item>
 
                 <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>

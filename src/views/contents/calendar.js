@@ -1,35 +1,102 @@
 
 // 상위 App
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../../css/contents/calendar.module.css";
 import { Drawer, Input, Button, Radio } from "antd";
+import { calendarState,  currentUser } from "../../recoil/state";
+import { useRecoilState } from "recoil";
+import Cards from "./cards";
+import * as Module from "../../modules/module";
+import { Alert } from "antd";
+import axios from "axios";
 
 function Calendar({pickDate, text}) {
     const [weeks, setWeeks] = useState([]);
     const [dayOfWeek, setDayOfWeek] = useState(0);
     const [open, setOpen] = useState(false);
-    const [value3, setValue3] = useState('Apple');
+    const [radioValue, setRadioValue] = useState(3);
+    const [calendarStateValue, calendarStateSet] = useRecoilState(calendarState);
+    const [monthData, setMonthData] = useState('');
+    const [clickDay, setClickDay] = useState(0);
+    const [importantType, setimportantType] = useState(["", "error", "warning", "info"]);
+    const [currentUserValue, currentUserSet] = useRecoilState(currentUser);
+    const inputRef = useRef();
 
     const options = [
-        { label: '중요', value: 'important' },
-        { label: '보통', value: 'normal' },
-        { label: '기본', value: 'default' },
+        { label: '매우중요', value: 1 },
+        { label: '중요', value: 2 },
+        { label: '보통', value: 3 },
       ];
 
     const showDrawer = (subItem) => {
         if(subItem[0] == -1) return;
+        setClickDay(subItem[0] < 10 ? "0" + subItem[0] : subItem[0]);
         setOpen(true);
     }
 
     const onClose = () => {
         setOpen(false);
+        let date = monthData + clickDay;
+        let data = calendarStateValue[date];
+        
+        let item = {
+            username: currentUserValue,
+            date: date,
+            data: data
+        }
+        axios.post("http://localhost:5000/schedule/delete_add", item).then((res) => {
+
+        })
     }
 
-    const onChange3 = ({ target: { value } }) => {
+
+    const onChange = ({ target: { value } }) => {
         console.log('radio3 checked', value);
-        setValue3(value);
+        setRadioValue(value);
     };
+
+    const listAdd = () => {
+        let value = inputRef.current.input.value;
+        let today = monthData + clickDay;
+        let getData = {...calendarStateValue};
+
+        if(value.trim() == '') {
+            return;
+        }
+
+        if(getData[today] == undefined) {
+            let item = {
+                date: today,
+                des: value,
+                important: radioValue,
+                username: currentUserValue,
+                num: 1
+            }
+            getData[today] = [item];
+            axios.post("http://localhost:5000/schedule/add", item).then((res) => {
+                console.log("Add New..");
+            })
+        } else {
+            console.log("Data : ", getData[today]);
+            let item = {
+                date: today,
+                des: value,
+                important: radioValue,
+                username: currentUserValue,
+                num: getData[today].length + 1
+            }
+            let array = [...getData[today]];
+            array.push(item);
+            getData[today] = array;
+
+            axios.post("http://localhost:5000/schedule/add", item).then((res) => {
+                console.log("Add Continue..");
+            })
+        }
+        calendarStateSet(getData);
+        inputRef.current.value = ''
+    }
 
     const makeCalendar = () => {
         let date = pickDate
@@ -60,11 +127,18 @@ function Calendar({pickDate, text}) {
 
     useEffect(() => {
         makeCalendar();
+        let date = pickDate;
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1
+
+        if(month < 10) month = "0" + month;
+        
+        setMonthData(year + month);
     }, [pickDate])
 
     return (
       <div className={styles.calendar}>
-        <h1>{pickDate.getFullYear() + " - " + (pickDate.getMonth() + 1)}</h1>
+        <h3>{pickDate.getFullYear() + "년 " + (pickDate.getMonth() + 1) + "월"}</h3>
         <div className={styles.frame}>
             <div className={styles.weeks}>
                 <div className={styles.week} style={{color:"#FF9494"}}>
@@ -106,8 +180,25 @@ function Calendar({pickDate, text}) {
                                                 {
                                                     subItem[0] == -1 ? (<></>) : (
                                                     <>
-                                                        <div className={styles.list}>
-                                                            <div className={styles.listItem}></div>
+                                                        <div className={styles.list}> 
+                                                        {
+                                                            calendarStateValue[monthData + (subItem[0] < 10 ? "0" + subItem[0] : subItem[0])] ? (
+                                                               
+                                                                calendarStateValue[monthData + (subItem[0] < 10 ? "0" + subItem[0] : subItem[0])].map((todo, todoIdx) => (
+                                                                    <div className={styles.listItem}> 
+                                                                       <Alert message={todo.des} type={importantType[parseInt(todo.important)]} >
+                                
+                                                                        </Alert>
+                                                                    </div>
+                                                                ))
+
+                                                            ) : (
+                                                                <>
+                                                                </>
+                                                            )
+                                                            
+                                                        }
+                                                            
                                                         </div>
                                                     </>
                                                     )
@@ -124,30 +215,23 @@ function Calendar({pickDate, text}) {
                 }
             </div>
 
-            <Drawer title="Basic Drawer" placement="right" onClose={onClose} open={open}>
-                <div>
-                    1. 오늘 할 일
-                </div>
-                <div>
-                    1. 오늘 할 일
-                </div>
-                <div>
-                    1. 오늘 할 일
-                </div>
-                <div>
-                    1. 오늘 할 일
-                </div>
-                <div>
-                    1. 오늘 할 일
-                </div>
-                <div>
-                    1. 오늘 할 일
+            <Drawer title={pickDate.getFullYear() + "-" + (pickDate.getMonth() + 1 < 10 ? "0" + (pickDate.getMonth() + 1) : pickDate.getMonth() + 1) + "-" + clickDay} placement="right" onClose={onClose} open={open}>
+                <div style={{height: "300px", overflow: "auto"}}>
+                {
+                    calendarStateValue[monthData + clickDay] ? (
+                        <Cards today={monthData + clickDay}>
+
+                        </Cards>
+                    ) : (
+                        <></>
+                    )
+                }
                 </div>
 
-                <Radio.Group options={options} onChange={onChange3} value={value3} optionType="button" />
-                <Input placeholder="할 일 추가"></Input>
+                <Radio.Group style={{"marginBottom":"20px"}} options={options} onChange={onChange} value={radioValue}/>
+                <Input style={{"marginBottom":"20px"}} placeholder="할 일 추가" ref={inputRef}></Input>
 
-                <Button type="primary">추가</Button>
+                <Button type="primary" onClick={listAdd} style={{"marginRight":"20px"}}>추가</Button>
             </Drawer>
         </div>
        

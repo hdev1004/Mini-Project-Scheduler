@@ -1,153 +1,88 @@
-import React, { useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import React from "react";
+import {Alert, Input} from "antd";
 
-const tasks = [
-  { id: "1", content: "First task" },
-  { id: "2", content: "Second task" },
-  { id: "3", content: "Third task" },
-  { id: "4", content: "Fourth task" },
-  { id: "5", content: "Fifth task" }
-];
+export default function App() {
+	const [schema, setSchema] = React.useState([
+		{
+			id: "123",
+			type: "a",
+			text: "123-text"
+		},
+		{
+			id: "345",
+			type: "b",
+			text: "345-text"
+		},
+		{
+			id: "567",
+			type: "a",
+			text: "567-text"
+		},
+		{
+			id: "789",
+			type: "b",
+			text: "789-text"
+		}
+	]);
 
-const taskStatus = {
-  requested: {
-    name: "Requested",
-    items: tasks
-  },
-  toDo: {
-    name: "To do",
-    items: []
-  },
-  inProgress: {
-    name: "In Progress",
-    items: []
-  },
-  done: {
-    name: "Done",
-    items: []
-  }
-};
+	const onDragEnd = (result) => {
+		// dropped outside the list
+		if (!result.destination) {
+			return;
+		}
 
-const onDragEnd = (result, columns, setColumns) => {
-  if (!result.destination) return;
-  const { source, destination } = result;
+		// reorder using index of source and destination.
+		const schemaCopy = schema.slice();
+		const [removed] = schemaCopy.splice(result.source.index, 1);
+		// put the removed one into destination.
+		schemaCopy.splice(result.destination.index, 0, removed);
 
-  if (source.droppableId !== destination.droppableId) {
-    const sourceColumn = columns[source.droppableId];
-    const destColumn = columns[destination.droppableId];
-    const sourceItems = [...sourceColumn.items];
-    const destItems = [...destColumn.items];
-    const [removed] = sourceItems.splice(source.index, 1);
-    destItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...sourceColumn,
-        items: sourceItems
-      },
-      [destination.droppableId]: {
-        ...destColumn,
-        items: destItems
-      }
-    });
-  } else {
-    const column = columns[source.droppableId];
-    const copiedItems = [...column.items];
-    const [removed] = copiedItems.splice(source.index, 1);
-    copiedItems.splice(destination.index, 0, removed);
-    setColumns({
-      ...columns,
-      [source.droppableId]: {
-        ...column,
-        items: copiedItems
-      }
-    });
-  }
-};
+		console.log(result);
 
-function App() {
-  const [columns, setColumns] = useState(taskStatus);
-  return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>Jira Board</h1>
-      <div
-        style={{ display: "flex", justifyContent: "center", height: "100%" }}
-      >
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
-          {Object.entries(columns).map(([columnId, column], index) => {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
-                }}
-                key={columnId}
-              >
-                <h2>{column.name}</h2>
-                <div style={{ margin: 8 }}>
-                  <Droppable droppableId={columnId} key={columnId}>
-                    {(provided, snapshot) => {
-                      return (
-                        <div
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          style={{
-                            background: snapshot.isDraggingOver
-                              ? "lightblue"
-                              : "lightgrey",
-                            padding: 4,
-                            width: 250,
-                            minHeight: 500
-                          }}
-                        >
-                          {column.items.map((item, index) => {
-                            return (
-                              <Draggable
-                                key={item.id}
-                                draggableId={item.id}
-                                index={index}
-                              >
-                                {(provided, snapshot) => {
-                                  return (
-                                    <div
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      style={{
-                                        userSelect: "none",
-                                        padding: 16,
-                                        margin: "0 0 8px 0",
-                                        minHeight: "50px",
-                                        backgroundColor: snapshot.isDragging
-                                          ? "#263B4A"
-                                          : "#456C86",
-                                        color: "white",
-                                        ...provided.draggableProps.style
-                                      }}
-                                    >
-                                      {item.content}
-                                    </div>
-                                  );
-                                }}
-                              </Draggable>
-                            );
-                          })}
-                          {provided.placeholder}
-                        </div>
-                      );
-                    }}
-                  </Droppable>
-                </div>
-              </div>
-            );
-          })}
-        </DragDropContext>
-      </div>
-    </div>
-  );
+		setSchema(schemaCopy);
+	};
+	return (
+		<div className="App">
+			<DragDropContext onDragEnd={onDragEnd}>
+				<Droppable droppableId="column1">
+					{(provided, snap) => (
+						<div
+							ref={provided.innerRef}
+							{...provided.droppableProps}
+						>
+							{schema.map((it, i) => (
+								<Draggable
+									key={it.id}
+									draggableId={it.id}
+									index={i}
+								>
+									{(provided, snap) => (
+										<div
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+											className="list-item"
+											style={{
+												backgroundColor: snap.isDragging
+													? "lightblue"
+													: "#eee",
+
+												...provided.draggableProps.style
+											}}
+										>
+                      <Input style={{width: "150px", backgroundColor: "#FFF2F0", border: "1px solid #FFCCC7"}}>
+                      </Input>
+											
+										</div>
+									)}
+								</Draggable>
+							))}
+							{provided.placeholder}
+						</div>
+					)}
+				</Droppable>
+			</DragDropContext>
+		</div>
+	);
 }
-
-export default App;

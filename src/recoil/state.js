@@ -19,3 +19,23 @@ export const testState = selector({
     },
     set: ({set}, newValue) => set(valueState, (newValue / 15))
 })
+
+export const loginUrlState = atom({
+    key: "loginUrl",
+    default: "http://localhost:5000/login"
+})
+
+export const checkUserState = atom({
+    key: "checkUser",
+    default: "http://localhost:5000/check_user"
+})
+
+export const currentUser = atom({
+    key: "currentUser",
+    default: ""
+})
+
+export const calendarState = atom({
+    key: "calendarState",
+    default: {}
+})

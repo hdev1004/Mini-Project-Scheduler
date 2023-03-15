@@ -74,12 +74,13 @@
     overflow-x: hidden;
     overflow-y: auto;
     margin-top: 5px;
-    width: 90px;
-    height: 70px;
+    width: 150px;
+    height: 75px;
 }
 
 .listItem {  
-    width: 90px;
+    margin-top: 5px;
+    height: 45px;
     font-weight: bolder !important;
     overflow: hidden;
     text-overflow: ellipsis;
