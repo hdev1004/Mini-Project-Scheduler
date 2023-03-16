@@ -1,0 +1,10 @@
+flask
+python-dotenv
+flask-restx
+flask-sqlalchemy
+flask_jwt_extended
+flask-marshmallow
+marshmallow-sqlalchemy
+Flask-Migrate
+flask_cors
+psycopg2-binary
