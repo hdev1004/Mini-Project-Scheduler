@@ -4,10 +4,13 @@
 }
 
 .calendar_manage {
+    border-bottom: 1px solid lightgray;
     margin-top: 20px;
     width: 100%;
+    height: 730px;
+    overflow: auto;
 
     display: flex;
     flex-direction: row;
-    position: absolute;
+    position: relative;
 }

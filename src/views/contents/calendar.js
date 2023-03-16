@@ -22,6 +22,7 @@ function Calendar({pickDate, text}) {
     const [importantType, setimportantType] = useState(["", "error", "warning", "info"]);
     const [currentUserValue, currentUserSet] = useRecoilState(currentUser);
     const inputRef = useRef();
+    const [today, setToday] = useState(new Date());
 
     const options = [
         { label: '매우중요', value: 1 },
@@ -174,7 +175,12 @@ function Calendar({pickDate, text}) {
                                         return (
                                             <div className={styles.day} onClick={() => {showDrawer(subItem)}}>
                                                 <div className={styles.date} style={subItem[1] == 0 ? {color:"#FF9494"} : subItem[1] == 6 ? {color: "#7895B2"} : {}}>
-                                                    {subItem[0] == -1 ? "" : subItem[0]}
+                                                    {monthData + (subItem[0] < 10 ? "0" + subItem[0] : subItem[0]) == Module.dateFullFormat(today) ? (
+                                                        <>{subItem[0]} - today</>
+                                                    ) : (
+                                                        <>{subItem[0] == -1 ? "" : subItem[0]}</>
+                                                    )}
+                                                    
                                                 </div>
 
                                                 {
@@ -216,7 +222,7 @@ function Calendar({pickDate, text}) {
             </div>
 
             <Drawer title={pickDate.getFullYear() + "-" + (pickDate.getMonth() + 1 < 10 ? "0" + (pickDate.getMonth() + 1) : pickDate.getMonth() + 1) + "-" + clickDay} placement="right" onClose={onClose} open={open}>
-                <div style={{height: "300px", overflow: "auto"}}>
+                <div style={{height: "500px", overflow: "auto"}}>
                 {
                     calendarStateValue[monthData + clickDay] ? (
                         <Cards today={monthData + clickDay}>

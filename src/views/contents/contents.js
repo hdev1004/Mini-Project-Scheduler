@@ -9,14 +9,15 @@ import "../../css/contents/contetns.css";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { checkUserState, loginState, calendarState, currentUser } from "../../recoil/state";
 import * as Moduel from "../../modules/module";
+import { Card, Alert } from "antd";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import Header from "../header/header";
 
 function Contetns() {
     const [cookies, setCookie, removeCookie] = useCookies(); // 쿠키 훅 
-    const [list, setList] = useState({}); //전체
-    const [todoList, setTodoList] = useState([]); //오늘 할 일
-    const today = new Date();
+    let today = new Date();
+    const [importantType, setimportantType] = useState(["", "error", "warning", "info"]);
     
     const [moves, setMoves] = useState([1, 2, 3]);
     const [triggerName, setTriggerName] = useState("triggerDefault"); 
@@ -183,6 +184,8 @@ function Contetns() {
     if(isLogin ) {
       return (
         <div className={styles.app}>
+          <Header/>
+
           <div className={styles.calendar_manage}>
             <div className={triggerName + moves[0]}>
               <Calendar_ pickDate={leftDate}></Calendar_>
@@ -204,27 +207,20 @@ function Contetns() {
   
             </div>
           </div>
-          {
-            /*
-          <h3>{today}</h3>
-          {
-            list[today] ? list[today].map((item, idx) => {
-              return (
-                <div>
-                  {item}
-                </div>
-              )
-            }) : (
-              <div>
-              </div>
-            )
-          }
-  
-          <Input ref={inputRef} style={{width:"200px", marginRight: "20px"}}/>
-          <Button type="primary" onClick={addList} style={{marginRight: "20px"}}>추가</Button>
-          <Button type="primary" onClick={printList}>확인</Button>
-            */
-          }
+
+          <div style={{width: "50%"}}>
+            <Card title="📢 오늘 일정" style={{ width: 400, boxShadow: "0px 0px 2px lightgray", marginLeft: "auto", marginRight:"auto", marginTop : "20px"}}>
+              {
+                calendarStateValue[Moduel.dateFullFormat(new Date(), 1)] ? (
+                  calendarStateValue[Moduel.dateFullFormat(new Date(), 1)].map((item, idx) => (
+                    <Alert message={item.des} type={importantType[item.important]} style={{height: "40px", marginBottom: "10px", fontWeight: "bold"}}></Alert>
+                  ))
+                ) : (
+                  <div>일정이 없습니다.</div>
+                )
+              }
+            </Card>
+          </div>
           
         </div>
       );

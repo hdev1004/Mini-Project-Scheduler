@@ -25,9 +25,9 @@ export const dateFormat = (date, startFlag) => {
  * @param {*} date //new Date() 형식의 구조
  * 반환형식 :  20221225
  */
-export const dateFullFormat = (date) => {
+export const dateFullFormat = (date, add = 1) => {
     let year = String(date.getFullYear());
-    let month = date.getMonth() + 1;
+    let month = date.getMonth() + add;
     let day = date.getDate();
 
     month = month < 10 ? "0" + month : String(month);
@@ -35,3 +35,4 @@ export const dateFullFormat = (date) => {
     
     return year + month + day;
 }
+

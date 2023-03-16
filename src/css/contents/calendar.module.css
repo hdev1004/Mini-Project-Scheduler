@@ -71,10 +71,11 @@
 }
 
 .list {  
-    overflow-x: hidden;
     overflow-y: auto;
     margin-top: 5px;
-    width: 150px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     height: 75px;
 }
 
@@ -92,7 +93,7 @@
 }
 
 .list::-webkit-scrollbar {
-    width: 5px;  /* 스크롤바의 너비 */
+    display: none;
 }
   
 .list::-webkit-scrollbar-thumb {
